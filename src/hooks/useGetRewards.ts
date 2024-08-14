@@ -1,12 +1,12 @@
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 import useGetQuest from './useGetQuest'
-import { getDecimalNumberFromAmount } from '@hyperplay/utils'
-import { getRewardCategory } from 'frontend/helpers/getRewardCategory'
+import { getDecimalNumberFromAmount, Quest } from '@hyperplay/utils'
+import { getRewardCategory } from '../helpers/getRewardCategory'
 import { useTranslation } from 'react-i18next'
 import { QuestReward } from '@hyperplay/ui'
 
-export function useGetRewards(questId: number | null) {
-  const questResult = useGetQuest(questId)
+export function useGetRewards(questId: number | null, getQuest: (questId: number) => Promise<Quest>, getExternalTaskCredits: (rewardId: string) => Promise<string>) {
+  const questResult = useGetQuest(questId, getQuest)
   const questMeta = questResult.data.data
 
   const queryClient = useQueryClient()
@@ -36,7 +36,7 @@ export function useGetRewards(questId: number | null) {
         }
 
         if (reward_i.reward_type === 'EXTERNAL-TASKS') {
-          const taskAmountToClaim = await window.api.getExternalTaskCredits(
+          const taskAmountToClaim = await getExternalTaskCredits(
             reward_i.id.toString()
           )
           numToClaim = getDecimalNumberFromAmount(

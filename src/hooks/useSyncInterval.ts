@@ -1,14 +1,15 @@
-import { wait } from '@hyperplay/utils'
-import { resetSessionStartedTime } from 'frontend/helpers/getPlaystreakArgsFromQuestData'
+import { resetSessionStartedTime } from '@/helpers/getPlaystreakArgsFromQuestData'
+import { Runner, wait } from '@hyperplay/utils'
 import { useEffect } from 'react'
 
 export function useSyncPlaySession(
   projectId: string,
-  invalidateQuery: () => Promise<void>
+  invalidateQuery: () => Promise<void>,
+  syncPlaySession: (appName: string, runner: Runner) => Promise<void>
 ) {
   useEffect(() => {
     const syncTimer = setInterval(async () => {
-      await window.api.syncPlaySession(projectId, 'hyperplay')
+      await syncPlaySession(projectId, 'hyperplay')
       // allow for some time before read
       await wait(5000)
       await invalidateQuery()

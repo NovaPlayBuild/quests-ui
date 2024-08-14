@@ -26,8 +26,7 @@ export default defineConfig({
     rollupOptions: {
       external: [...Object.keys(packageJson.peerDependencies)],
       input: [
-        resolve(__dirname, './src/index.ts'),
-        resolve(__dirname, './src/assets/images/index.tsx')
+        resolve(__dirname, './src/index.ts')
       ]
     }
   }

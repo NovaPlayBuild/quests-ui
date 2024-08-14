@@ -4,7 +4,7 @@ import { TFunction } from 'i18next'
 
 export function getRewardCategory(
   reward: Reward,
-  t: TFunction<'translation', undefined, 'translation'>
+  t: TFunction<'translation', undefined>
 ) {
   if (
     reward.reward_type === 'POINTS' ||

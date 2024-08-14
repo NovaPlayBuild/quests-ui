@@ -4,7 +4,7 @@ export default function useGetSteamGame(
   steam_games: {
     id: string
   }[],
-  getSteamGameMetadata: (id: number)=>any
+  getSteamGameMetadata: (gameId: number) => Promise<unknown>
 ) {
   const query = useQueries({
     queries: steam_games.map((val) => ({

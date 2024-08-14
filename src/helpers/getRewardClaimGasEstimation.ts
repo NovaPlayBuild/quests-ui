@@ -1,14 +1,15 @@
 
-import { createPublicClient } from 'viem'
+import { createPublicClient, http } from 'viem'
 import { chainMap, parseChainMetadataToViemChain } from '@hyperplay/chains'
+import { Reward } from '@hyperplay/utils'
 
 const averageEstimatedGasUsagePerFunction: Record<string, number> = {
     ERC1155: 102_470,
     ERC721: 107_567,
     ERC20: 98_507
-  }
+}
   
-export async function getRewardClaimGasEstimation(reward: Reward) {
+export async function getRewardClaimGasEstimation(reward: Reward, logInfo: (message: string) => void) {
     if (!reward.chain_id) {
       throw Error(`chain_id is not set for reward: ${reward.id}`)
     }
@@ -22,7 +23,6 @@ export async function getRewardClaimGasEstimation(reward: Reward) {
     const viemChain = parseChainMetadataToViemChain(chainMetadata)
   
     const publicClient = createPublicClient({
-      // @ts-expect-error: chain types are valid
       chain: viemChain,
       transport: http()
     })
@@ -45,7 +45,7 @@ export async function getRewardClaimGasEstimation(reward: Reward) {
     const gasPrice = await publicClient.getGasPrice()
     const gasNeeded = BigInt(gasPerFunction) * gasPrice
   
-    window.api.logInfo(
+    logInfo(
       `Gas needed to claim ${reward.reward_type} reward: ${gasNeeded} (${gasPerFunction} gas per function * ${gasPrice} gas price)`
     )
   

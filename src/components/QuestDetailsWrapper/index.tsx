@@ -15,7 +15,7 @@ import {
   useSwitchChain,
   useWriteContract
 } from 'wagmi'
-import { Reward, RewardClaimSignature, ConfirmClaimParams } from '@hyperplay/utils'
+import { Reward, RewardClaimSignature, ConfirmClaimParams, Runner, DepositContract } from '@hyperplay/utils'
 import { mintReward } from '../../helpers/mintReward'
 import {
   resyncExternalTasks as resyncExternalTasksHelper
@@ -34,7 +34,10 @@ import { getRewardClaimGasEstimation } from '@/helpers/getRewardClaimGasEstimati
 export interface QuestDetailsWrapperProps {
   selectedQuestId: number | null
   projectId: string
-  rewardTypeClaimEnabled: Record<Reward['reward_type'], boolean>
+  flags: {
+    rewardTypeClaimEnabled: Record<Reward['reward_type'], boolean>,
+    questsOverlayClaimCtaEnabled?: boolean
+  }
   getQuest: (questId: number) => any
   getUserPlayStreak: (questId: number)=>any
   getSteamGameMetadata: (id: number)=>any
@@ -47,13 +50,18 @@ export interface QuestDetailsWrapperProps {
   completeExternalTask: (reward: Reward) => Promise<any>
   getQuestRewardSignature: (address: `0x${string}`, rewardId: number, tokenId?: number) => Promise<RewardClaimSignature>
   confirmRewardClaim: (params: ConfirmClaimParams) => Promise<void>
-  resyncExternalTask: (rewardId: string) => Promise<void>
+  resyncExternalTasks: (rewardId: string) => Promise<void>
+  getExternalTaskCredits: (rewardId: string) => Promise<string>
+  syncPlaySession: (appName: string, runner: Runner) => Promise<void>
+  logInfo: (message: string) => void
+  openDiscordLink: () => void
+  getDepositContracts: (questId: number) => Promise<DepositContract[]>
 }
 
 export function QuestDetailsWrapper({
   selectedQuestId,
   projectId,
-  rewardTypeClaimEnabled,
+  flags,
   getQuest,
   getUserPlayStreak,
   getSteamGameMetadata,
@@ -66,8 +74,14 @@ export function QuestDetailsWrapper({
   completeExternalTask,
   getQuestRewardSignature,
   confirmRewardClaim,
-  resyncExternalTask
+  resyncExternalTasks,
+  getExternalTaskCredits,
+  syncPlaySession,
+  logInfo,
+  openDiscordLink,
+  getDepositContracts
 }: QuestDetailsWrapperProps) {
+  const rewardTypeClaimEnabled = flags.rewardTypeClaimEnabled
   const {
     writeContractAsync,
     error: writeContractError,
@@ -81,7 +95,7 @@ export function QuestDetailsWrapper({
     error: switchChainError
   } = useSwitchChain()
 
-  useTrackQuestViewed(selectedQuestId)
+  useTrackQuestViewed(selectedQuestId, trackEvent)
 
   const account = useAccount()
   const [showWarning, setShowWarning] = useState(false)
@@ -91,7 +105,7 @@ export function QuestDetailsWrapper({
   const [warningMessage, setWarningMessage] = useState<string>()
   const questMeta = questResult.data.data
 
-  const rewardsQuery = useGetRewards(selectedQuestId)
+  const rewardsQuery = useGetRewards(selectedQuestId, getQuest, getExternalTaskCredits)
   const questRewards = rewardsQuery.data.data
   const queryClient = useQueryClient()
 
@@ -160,7 +174,7 @@ export function QuestDetailsWrapper({
       loading: val.isLoading || val.isFetching
     })) ?? []
 
-  useSyncPlaySession(projectId, questPlayStreakResult.invalidateQuery)
+  useSyncPlaySession(projectId, questPlayStreakResult.invalidateQuery, syncPlaySession)
 
   const [collapseIsOpen, setCollapseIsOpen] = useState(false)
 
@@ -239,7 +253,7 @@ export function QuestDetailsWrapper({
 
     await switchChainAsync({ chainId: reward.chain_id })
 
-    const gasNeeded = await getRewardClaimGasEstimation(reward)
+    const gasNeeded = await getRewardClaimGasEstimation(reward, logInfo)
     const hasEnoughBalance = walletBalance.value >= gasNeeded
 
     if (!hasEnoughBalance) {
@@ -275,9 +289,11 @@ export function QuestDetailsWrapper({
     // but we might want to not block the UI thread when we implement multiple claims
     const hash = await mintReward({
       questId: questMeta.id,
-      signature: claimSignature
+      signature: claimSignature,
       reward,
-      writeContractAsync
+      writeContractAsync,
+      getDepositContracts,
+      logError
     })
 
     await confirmClaimMutation.mutateAsync({
@@ -392,7 +408,7 @@ export function QuestDetailsWrapper({
     )
 
     const ctaDisabled =
-      !rewardTypeClaimEnabled.questsOverlayClaimCtaEnabled ||
+      !flags.questsOverlayClaimCtaEnabled ||
       (!isEligible() && !showResyncButton) ||
       isClaiming ||
       !isRewardTypeClaimable
@@ -408,7 +424,7 @@ export function QuestDetailsWrapper({
           "Please try once more. If it still doesn't work, create a Discord support ticket."
         ),
         actionText: t('quest.createDiscordTicket', 'Create Discord Ticket'),
-        onActionClick: () => window.api.openDiscordLink(),
+        onActionClick: () => openDiscordLink(),
         variant: 'danger'
       }
     }
