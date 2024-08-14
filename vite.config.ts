@@ -1,6 +1,7 @@
 import react from '@vitejs/plugin-react-swc'
 import { resolve } from 'node:path'
 import { defineConfig } from 'vite'
+import dts from 'vite-plugin-dts'
 
 import packageJson from './package.json'
 
@@ -11,7 +12,7 @@ export default defineConfig({
       '@': '/src'
     }
   },
-  plugins: [react()],
+  plugins: [react(), dts()],
   build: {
     copyPublicDir: true,
     minify: 'esbuild',

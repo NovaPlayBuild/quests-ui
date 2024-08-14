@@ -1,6 +1,6 @@
 {
   "name": "@hyperplay/quests-ui",
-  "version": "0.0.0",
+  "version": "0.0.1",
   "description": "",
   "main": "index.js",
   "scripts": {
@@ -33,6 +33,7 @@
     "sass-embedded": "^1.77.8",
     "viem": "^2.19.4",
     "vite": "^5.4.0",
+    "vite-plugin-dts": "^4.0.3",
     "wagmi": "^2.12.5"
   },
   "peerDependencies": {
