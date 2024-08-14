@@ -53,7 +53,7 @@ export interface QuestDetailsWrapperProps {
     tokenId?: number
   ) => Promise<RewardClaimSignature>
   confirmRewardClaim: (params: ConfirmClaimParams) => Promise<void>
-  resyncExternalTasks: (rewardId: string) => Promise<void>
+  resyncExternalTask: (rewardId: string) => Promise<void>
   getExternalTaskCredits: (rewardId: string) => Promise<string>
   syncPlaySession: (appName: string, runner: Runner) => Promise<void>
   logInfo: (message: string) => void
@@ -77,7 +77,7 @@ export function QuestDetailsWrapper({
   completeExternalTask,
   getQuestRewardSignature,
   confirmRewardClaim,
-  resyncExternalTasks,
+  resyncExternalTask,
   getExternalTaskCredits,
   syncPlaySession,
   logInfo,
@@ -126,7 +126,7 @@ export function QuestDetailsWrapper({
     mutationFn: async (rewards: Reward[]) => {
       const result = await resyncExternalTasksHelper(
         rewards,
-        resyncExternalTasks
+        resyncExternalTask
       )
       const queryKey = `useGetG7UserCredits`
       queryClient.invalidateQueries({ queryKey: [queryKey] })
