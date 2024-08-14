@@ -1,18 +1,22 @@
 import { DepositContract, Reward, RewardClaimSignature } from '@hyperplay/utils'
 import { questRewardAbi } from '../abis/RewardsAbi'
-import { WriteContractMutate } from 'wagmi/query'
+import { WriteContractMutateAsync } from 'wagmi/query'
 import { Config } from 'wagmi'
 
 export async function mintReward({
   reward,
   questId,
-  address,
-  writeContract
+  signature,
+  writeContractAsync,
+  getDepositContracts,
+  logError
 }: {
   reward: Reward
   questId: number
-  address: `0x${string}`
-  writeContract: WriteContractMutate<Config, unknown>
+  signature: RewardClaimSignature
+  writeContractAsync: WriteContractMutateAsync<Config, unknown>
+  getDepositContracts: (questId: number) => Promise<DepositContract[]>
+  logError: (message: string) => void
 }) {
   if (reward.chain_id === null) {
     throw Error('chain id is not set for reward when trying to mint')
@@ -21,20 +25,8 @@ export async function mintReward({
   const isERC1155Reward =
     reward.reward_type === 'ERC1155' && reward.token_ids.length === 1
 
-  let tokenId: number | undefined = undefined
-
-  if (isERC1155Reward) {
-    tokenId = reward.token_ids[0].token_id
-  }
-
-  const sig: RewardClaimSignature = await window.api.getQuestRewardSignature(
-    address,
-    reward.id,
-    tokenId
-  )
-
   const depositContracts: DepositContract[] =
-    await window.api.getDepositContracts(questId)
+    await getDepositContracts(questId)
 
   const depositContractAddress = depositContracts.find(
     (val) => val.chain_id === reward.chain_id
@@ -46,8 +38,8 @@ export async function mintReward({
     )
   }
 
-  const logError = (error: Error) => {
-    window.api.logError(`Error minting reward: ${error.message}`)
+  const logMintingError = (error: Error) => {
+    logError(`Error minting reward: ${error.message}`)
   }
 
   if (
@@ -55,7 +47,7 @@ export async function mintReward({
     reward.amount_per_user &&
     reward.decimals
   ) {
-    writeContract(
+    return writeContractAsync(
       {
         address: depositContractAddress,
         abi: questRewardAbi,
@@ -64,18 +56,18 @@ export async function mintReward({
           BigInt(questId),
           reward.contract_address,
           BigInt(reward.amount_per_user),
-          BigInt(sig.nonce),
-          BigInt(sig.expiration),
-          sig.signature
+          BigInt(signature.nonce),
+          BigInt(signature.expiration),
+          signature.signature
         ]
       },
       {
-        onError: logError
+        onError: logMintingError
       }
     )
   } else if (isERC1155Reward && reward.decimals !== null) {
     const { token_id, amount_per_user } = reward.token_ids[0]
-    writeContract(
+    return writeContractAsync(
       {
         address: depositContractAddress,
         abi: questRewardAbi,
@@ -85,17 +77,17 @@ export async function mintReward({
           reward.contract_address,
           BigInt(token_id),
           BigInt(amount_per_user),
-          BigInt(sig.nonce),
-          BigInt(sig.expiration),
-          sig.signature
+          BigInt(signature.nonce),
+          BigInt(signature.expiration),
+          signature.signature
         ]
       },
       {
-        onError: logError
+        onError: logMintingError
       }
     )
   } else if (reward.reward_type === 'ERC721' && reward.amount_per_user) {
-    writeContract(
+    return writeContractAsync(
       {
         address: depositContractAddress,
         abi: questRewardAbi,
@@ -105,14 +97,16 @@ export async function mintReward({
           reward.contract_address,
           // TODO: supply token id from return statement of get sig
           BigInt('0'),
-          BigInt(sig.nonce),
-          BigInt(sig.expiration),
-          sig.signature
+          BigInt(signature.nonce),
+          BigInt(signature.expiration),
+          signature.signature
         ]
       },
       {
-        onError: logError
+        onError: logMintingError
       }
     )
   }
+
+  throw Error('Unsupported reward type')
 }

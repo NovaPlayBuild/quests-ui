@@ -15,10 +15,10 @@ import {
   useSwitchChain,
   useWriteContract
 } from 'wagmi'
-import { Reward } from '@hyperplay/utils'
+import { Reward, RewardClaimSignature, ConfirmClaimParams } from '@hyperplay/utils'
 import { mintReward } from '../../helpers/mintReward'
 import {
-  resyncExternalTasks
+  resyncExternalTasks as resyncExternalTasksHelper
 } from '../../helpers/resyncExternalTask'
 import useGetUserPlayStreak from '../../hooks/useGetUserPlayStreak'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
@@ -45,6 +45,9 @@ export interface QuestDetailsWrapperProps {
   logError: (msg: string) => void
   claimPoints: (reward: Reward) => Promise<any>
   completeExternalTask: (reward: Reward) => Promise<any>
+  getQuestRewardSignature: (address: `0x${string}`, rewardId: number, tokenId?: number) => Promise<RewardClaimSignature>
+  confirmRewardClaim: (params: ConfirmClaimParams) => Promise<void>
+  resyncExternalTask: (rewardId: string) => Promise<void>
 }
 
 export function QuestDetailsWrapper({
@@ -60,10 +63,13 @@ export function QuestDetailsWrapper({
   openSignInModal,
   logError,
   claimPoints,
-  completeExternalTask
+  completeExternalTask,
+  getQuestRewardSignature,
+  confirmRewardClaim,
+  resyncExternalTask
 }: QuestDetailsWrapperProps) {
   const {
-    writeContract,
+    writeContractAsync,
     error: writeContractError,
     isPending: isPendingWriteContract,
     reset: resetWriteContract
@@ -94,7 +100,7 @@ export function QuestDetailsWrapper({
 
   const resyncMutation = useMutation({
     mutationFn: async (rewards: Reward[]) => {
-      const result = await resyncExternalTasks(rewards)
+      const result = await resyncExternalTasksHelper(rewards, resyncExternalTasks)
       const queryKey = `useGetG7UserCredits`
       queryClient.invalidateQueries({ queryKey: [queryKey] })
       return result
@@ -116,6 +122,27 @@ export function QuestDetailsWrapper({
       const queryKey = `getPointsBalancesForProject:${projectId}`
       queryClient.invalidateQueries({ queryKey: [queryKey] })
       return result
+    }
+  })
+
+  const confirmClaimMutation = useMutation({
+    mutationFn: async (params: ConfirmClaimParams) => {
+      return confirmRewardClaim(params)
+    },
+    retry: 5,
+    retryDelay: 1000,
+    onSuccess: async () => {
+      await questPlayStreakResult.invalidateQuery()
+    },
+    onError: (error, variables) => {
+      logError(
+        `Error confirming reward claim ${
+          error.message
+        }, variables: ${JSON.stringify({
+          ...variables,
+          address: account?.address
+        })}`
+      )
     }
   })
 
@@ -228,11 +255,34 @@ export function QuestDetailsWrapper({
       return
     }
 
-    return mintReward({
+    let tokenId: number | undefined = undefined
+
+    const isERC1155Reward =
+      reward.reward_type === 'ERC1155' && reward.token_ids.length === 1
+
+    if (isERC1155Reward) {
+      tokenId = reward.token_ids[0].token_id
+    }
+
+    const claimSignature: RewardClaimSignature =
+      await getQuestRewardSignature(
+        account.address,
+        reward.id,
+        tokenId
+      )
+
+    // awaiting is fine for now because we're doing a single write contract at a time,
+    // but we might want to not block the UI thread when we implement multiple claims
+    const hash = await mintReward({
       questId: questMeta.id,
-      address: account.address,
+      signature: claimSignature
       reward,
-      writeContract
+      writeContractAsync
+    })
+
+    await confirmClaimMutation.mutateAsync({
+      signature: claimSignature.signature,
+      transactionHash: hash
     })
   }
 
