@@ -5,7 +5,11 @@ import { getRewardCategory } from '../helpers/getRewardCategory'
 import { useTranslation } from 'react-i18next'
 import { QuestReward } from '@hyperplay/ui'
 
-export function useGetRewards(questId: number | null, getQuest: (questId: number) => Promise<Quest>, getExternalTaskCredits: (rewardId: string) => Promise<string>) {
+export function useGetRewards(
+  questId: number | null,
+  getQuest: (questId: number) => Promise<Quest>,
+  getExternalTaskCredits: (rewardId: string) => Promise<string>
+) {
   const questResult = useGetQuest(questId, getQuest)
   const questMeta = questResult.data.data
 

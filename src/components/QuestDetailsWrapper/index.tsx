@@ -9,17 +9,16 @@ import styles from './index.module.scss'
 import useGetQuest from '../../hooks/useGetQuest'
 import useGetSteamGame from '../../hooks/useGetSteamGame'
 import { useTranslation } from 'react-i18next'
+import { useAccount, useBalance, useSwitchChain, useWriteContract } from 'wagmi'
 import {
-  useAccount,
-  useBalance,
-  useSwitchChain,
-  useWriteContract
-} from 'wagmi'
-import { Reward, RewardClaimSignature, ConfirmClaimParams, Runner, DepositContract } from '@hyperplay/utils'
+  Reward,
+  RewardClaimSignature,
+  ConfirmClaimParams,
+  Runner,
+  DepositContract
+} from '@hyperplay/utils'
 import { mintReward } from '../../helpers/mintReward'
-import {
-  resyncExternalTasks as resyncExternalTasksHelper
-} from '../../helpers/resyncExternalTask'
+import { resyncExternalTasks as resyncExternalTasksHelper } from '../../helpers/resyncExternalTask'
 import useGetUserPlayStreak from '../../hooks/useGetUserPlayStreak'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { getPlaystreakArgsFromQuestData } from '../../helpers/getPlaystreakArgsFromQuestData'
@@ -35,12 +34,12 @@ export interface QuestDetailsWrapperProps {
   selectedQuestId: number | null
   projectId: string
   flags: {
-    rewardTypeClaimEnabled: Record<Reward['reward_type'], boolean>,
+    rewardTypeClaimEnabled: Record<Reward['reward_type'], boolean>
     questsOverlayClaimCtaEnabled?: boolean
   }
   getQuest: (questId: number) => any
-  getUserPlayStreak: (questId: number)=>any
-  getSteamGameMetadata: (id: number)=>any
+  getUserPlayStreak: (questId: number) => any
+  getSteamGameMetadata: (id: number) => any
   isSignedIn: boolean
   trackEvent: (event: any) => Promise<void>
   signInWithSteamAccount: () => void
@@ -48,7 +47,11 @@ export interface QuestDetailsWrapperProps {
   logError: (msg: string) => void
   claimPoints: (reward: Reward) => Promise<any>
   completeExternalTask: (reward: Reward) => Promise<any>
-  getQuestRewardSignature: (address: `0x${string}`, rewardId: number, tokenId?: number) => Promise<RewardClaimSignature>
+  getQuestRewardSignature: (
+    address: `0x${string}`,
+    rewardId: number,
+    tokenId?: number
+  ) => Promise<RewardClaimSignature>
   confirmRewardClaim: (params: ConfirmClaimParams) => Promise<void>
   resyncExternalTasks: (rewardId: string) => Promise<void>
   getExternalTaskCredits: (rewardId: string) => Promise<string>
@@ -105,16 +108,26 @@ export function QuestDetailsWrapper({
   const [warningMessage, setWarningMessage] = useState<string>()
   const questMeta = questResult.data.data
 
-  const rewardsQuery = useGetRewards(selectedQuestId, getQuest, getExternalTaskCredits)
+  const rewardsQuery = useGetRewards(
+    selectedQuestId,
+    getQuest,
+    getExternalTaskCredits
+  )
   const questRewards = rewardsQuery.data.data
   const queryClient = useQueryClient()
 
-  const questPlayStreakResult = useGetUserPlayStreak(selectedQuestId, getUserPlayStreak)
+  const questPlayStreakResult = useGetUserPlayStreak(
+    selectedQuestId,
+    getUserPlayStreak
+  )
   const questPlayStreakData = questPlayStreakResult.data.data
 
   const resyncMutation = useMutation({
     mutationFn: async (rewards: Reward[]) => {
-      const result = await resyncExternalTasksHelper(rewards, resyncExternalTasks)
+      const result = await resyncExternalTasksHelper(
+        rewards,
+        resyncExternalTasks
+      )
       const queryKey = `useGetG7UserCredits`
       queryClient.invalidateQueries({ queryKey: [queryKey] })
       return result
@@ -174,7 +187,11 @@ export function QuestDetailsWrapper({
       loading: val.isLoading || val.isFetching
     })) ?? []
 
-  useSyncPlaySession(projectId, questPlayStreakResult.invalidateQuery, syncPlaySession)
+  useSyncPlaySession(
+    projectId,
+    questPlayStreakResult.invalidateQuery,
+    syncPlaySession
+  )
 
   const [collapseIsOpen, setCollapseIsOpen] = useState(false)
 
@@ -278,12 +295,11 @@ export function QuestDetailsWrapper({
       tokenId = reward.token_ids[0].token_id
     }
 
-    const claimSignature: RewardClaimSignature =
-      await getQuestRewardSignature(
-        account.address,
-        reward.id,
-        tokenId
-      )
+    const claimSignature: RewardClaimSignature = await getQuestRewardSignature(
+      account.address,
+      reward.id,
+      tokenId
+    )
 
     // awaiting is fine for now because we're doing a single write contract at a time,
     // but we might want to not block the UI thread when we implement multiple claims

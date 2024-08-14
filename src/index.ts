@@ -1,1 +1,1 @@
-export {QuestDetailsWrapper} from './components/QuestDetailsWrapper'
+export { QuestDetailsWrapper } from './components/QuestDetailsWrapper'

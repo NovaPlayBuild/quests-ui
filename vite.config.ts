@@ -11,9 +11,7 @@ export default defineConfig({
       '@': '/src'
     }
   },
-  plugins: [
-    react(),
-  ],
+  plugins: [react()],
   build: {
     copyPublicDir: true,
     minify: 'esbuild',
@@ -25,9 +23,7 @@ export default defineConfig({
     },
     rollupOptions: {
       external: [...Object.keys(packageJson.peerDependencies)],
-      input: [
-        resolve(__dirname, './src/index.ts')
-      ]
+      input: [resolve(__dirname, './src/index.ts')]
     }
   }
 })

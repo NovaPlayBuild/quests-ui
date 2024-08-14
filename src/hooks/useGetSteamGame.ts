@@ -10,9 +10,7 @@ export default function useGetSteamGame(
     queries: steam_games.map((val) => ({
       queryKey: ['getSteamGame', val.id],
       queryFn: async () => {
-        const response = await getSteamGameMetadata(
-          Number.parseInt(val.id)
-        )
+        const response = await getSteamGameMetadata(Number.parseInt(val.id))
         if (!response) return null
         return response as {
           name?: string

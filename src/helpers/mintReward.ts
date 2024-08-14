@@ -25,8 +25,7 @@ export async function mintReward({
   const isERC1155Reward =
     reward.reward_type === 'ERC1155' && reward.token_ids.length === 1
 
-  const depositContracts: DepositContract[] =
-    await getDepositContracts(questId)
+  const depositContracts: DepositContract[] = await getDepositContracts(questId)
 
   const depositContractAddress = depositContracts.find(
     (val) => val.chain_id === reward.chain_id

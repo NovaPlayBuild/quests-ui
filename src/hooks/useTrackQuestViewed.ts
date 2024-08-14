@@ -1,6 +1,9 @@
 import { useEffect } from 'react'
 
-export function useTrackQuestViewed(selectedQuestId: number | null, trackEvent: (payload: any) => Promise<void>) {
+export function useTrackQuestViewed(
+  selectedQuestId: number | null,
+  trackEvent: (payload: any) => Promise<void>
+) {
   useEffect(() => {
     if (selectedQuestId !== null) {
       trackEvent({
