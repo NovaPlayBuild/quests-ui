@@ -8,7 +8,7 @@
   },
   "keywords": [],
   "author": "",
-  "license": "ISC",
+  "license": "LGPL-3.0-only",
   "devDependencies": {
     "@hyperplay/chains": "^0.3.0",
     "@hyperplay/ui": "^1.7.17",
