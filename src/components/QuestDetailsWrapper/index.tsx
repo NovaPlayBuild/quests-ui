@@ -456,6 +456,7 @@ export function QuestDetailsWrapper({
       ['ERC1155', 'ERC721', 'ERC20'].includes(reward.reward_type)
     )
 
+    console.log('rendering with ', questRewards)
     const questDetailsProps: QuestDetailsProps = {
       alertProps,
       questType: questMeta.type,

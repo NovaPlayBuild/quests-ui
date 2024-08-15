@@ -65,6 +65,7 @@ export function useGetRewards(
             rewards.push(questReward_i)
           }
         } else {
+          console.log('pushing this reward ', reward_i)
           const questReward_i: QuestReward = {
             title: reward_i.name,
             imageUrl: reward_i.image_url,
