@@ -12,8 +12,8 @@ devDependencies:
     specifier: ^1.7.17
     version: 1.7.17(@emotion/react@11.13.0)(@mantine/carousel@7.12.1)(@mantine/core@7.12.1)(@mantine/dropzone@7.12.1)(@mantine/hooks@7.12.1)(embla-carousel-autoplay@8.1.8)(embla-carousel-react@8.1.8)(react-dom@18.3.1)(react-markdown@9.0.1)(react@18.3.1)
   '@hyperplay/utils':
-    specifier: ^0.2.2
-    version: 0.2.2
+    specifier: ^0.2.3
+    version: 0.2.3
   '@tanstack/react-query':
     specifier: ^5.51.23
     version: 5.51.23(react@18.3.1)
@@ -3008,10 +3008,10 @@ packages:
       bignumber.js: 9.1.2
     dev: true
 
-  /@hyperplay/utils@0.2.2:
+  /@hyperplay/utils@0.2.3:
     resolution:
       {
-        integrity: sha512-nN8Mqn752Hbc2leiAcWPYYqRWcqEA15v9sv5XquyWDagKfnzHHl1hSPm/nClxDgsPMCyAIfoLiZ8xGzdY1kbLQ==
+        integrity: sha512-KxSFUA/3SOjU+LfteLQZ60u7x8F6okZ3lATHKkopDWg6DET6OLjZ5OMaxolyimqYe3yndnAwo6qTzEAjsHGyww==
       }
     dependencies:
       bignumber.js: 9.1.2
