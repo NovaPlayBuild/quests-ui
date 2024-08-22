@@ -32,6 +32,15 @@ import { ConfirmClaimModal } from '../ConfirmClaimModal'
 import { getRewardClaimGasEstimation } from '@/helpers/getRewardClaimGasEstimation'
 import { getBalance } from 'viem/actions'
 
+class ClaimError extends Error {
+  properties: any
+
+  constructor(message: string, properties: any) {
+    super(message)
+    this.properties = properties
+  }
+}
+
 export interface QuestDetailsWrapperProps {
   selectedQuestId: number | null
   projectId: string
@@ -364,13 +373,9 @@ export function QuestDetailsWrapper({
             break
         }
       } catch (err) {
-        const errMsg = `${err}`
-        console.error(errMsg)
-        trackEvent({
-          event: 'Reward Claim Error',
-          properties
-        })
+        throw new ClaimError(`${err}`, properties)
       }
+
       trackEvent({
         event: 'Reward Claim Success',
         properties
@@ -386,6 +391,13 @@ export function QuestDetailsWrapper({
       await questPlayStreakResult.invalidateQuery()
     },
     onError: (error) => {
+      if (error instanceof ClaimError) {
+        trackEvent({
+          event: 'Reward Claim Error',
+          properties: error.properties
+        })
+      }
+      console.error('Error claiming rewards:', error)
       logError(`Error claiming rewards: ${error}`)
     }
   })
