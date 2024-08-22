@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from 'react'
 import {
   Game,
+  MarkdownDescription,
   QuestDetails,
   QuestDetailsProps,
   QuestDetailsTranslations
@@ -456,12 +457,15 @@ export function QuestDetailsWrapper({
       ['ERC1155', 'ERC721', 'ERC20'].includes(reward.reward_type)
     )
 
-    console.log('rendering with ', questRewards)
     const questDetailsProps: QuestDetailsProps = {
       alertProps,
       questType: questMeta.type,
       title: questMeta.name,
-      description: questMeta.description,
+      description: (
+        <MarkdownDescription classNames={{ root: styles.markdownDescription }}>
+          {questMeta.description}
+        </MarkdownDescription>
+      ),
       eligibility: {
         reputation: {
           games: steamGames,
