@@ -10,7 +10,7 @@ import styles from './index.module.scss'
 import useGetQuest from '../../hooks/useGetQuest'
 import useGetSteamGame from '../../hooks/useGetSteamGame'
 import { useTranslation } from 'react-i18next'
-import { useAccount, useBalance, useSwitchChain, useWriteContract } from 'wagmi'
+import { useAccount, useSwitchChain, useWriteContract } from 'wagmi'
 import {
   Reward,
   RewardClaimSignature,
@@ -30,6 +30,7 @@ import { useSyncPlaySession } from '../../hooks/useSyncInterval'
 import { useTrackQuestViewed } from '../../hooks/useTrackQuestViewed'
 import { ConfirmClaimModal } from '../ConfirmClaimModal'
 import { getRewardClaimGasEstimation } from '@/helpers/getRewardClaimGasEstimation'
+import { getBalance } from 'viem/actions'
 
 export interface QuestDetailsWrapperProps {
   selectedQuestId: number | null
@@ -60,6 +61,7 @@ export interface QuestDetailsWrapperProps {
   logInfo: (message: string) => void
   openDiscordLink: () => void
   getDepositContracts: (questId: number) => Promise<DepositContract[]>
+  config: any
 }
 
 export function QuestDetailsWrapper({
@@ -83,7 +85,8 @@ export function QuestDetailsWrapper({
   syncPlaySession,
   logInfo,
   openDiscordLink,
-  getDepositContracts
+  getDepositContracts,
+  config
 }: QuestDetailsWrapperProps) {
   const rewardTypeClaimEnabled = flags.rewardTypeClaimEnabled
   const {
@@ -103,7 +106,6 @@ export function QuestDetailsWrapper({
 
   const account = useAccount()
   const [showWarning, setShowWarning] = useState(false)
-  const { data: walletBalance } = useBalance({ address: account?.address })
   const { t } = useTranslation()
   const questResult = useGetQuest(selectedQuestId, getQuest)
   const [warningMessage, setWarningMessage] = useState<string>()
@@ -265,18 +267,19 @@ export function QuestDetailsWrapper({
       return
     }
 
-    if (!walletBalance) {
-      throw Error('Wallet balance not available')
-    }
-
     await switchChainAsync({ chainId: reward.chain_id })
 
     const gasNeeded = await getRewardClaimGasEstimation(reward, logInfo)
-    const hasEnoughBalance = walletBalance.value >= gasNeeded
+    const walletBalance = await getBalance(config, {
+      address: account.address
+    })
+    const hasEnoughBalance = walletBalance >= gasNeeded
+
+    logInfo(`Current wallet gas: ${walletBalance}`)
 
     if (!hasEnoughBalance) {
       logError(
-        `Not enough balance in the connected wallet to cover the gas fee associated with this Quest Reward claim. Current balance: ${walletBalance.value}, gas needed: ${gasNeeded}`
+        `Not enough balance in the connected wallet to cover the gas fee associated with this Quest Reward claim. Current balance: ${walletBalance}, gas needed: ${gasNeeded}`
       )
       setWarningMessage(
         t(
