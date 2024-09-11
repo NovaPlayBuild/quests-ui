@@ -5,13 +5,13 @@ settings:
   excludeLinksFromLockfile: false
 
 devDependencies:
-  '@hyperplay/chains':
+  '@novaplay/chains':
     specifier: ^0.3.0
     version: 0.3.0(typescript@5.5.4)
-  '@hyperplay/ui':
+  '@novaplay/ui':
     specifier: ^1.7.17
     version: 1.7.17(@emotion/react@11.13.0)(@mantine/carousel@7.12.1)(@mantine/core@7.12.1)(@mantine/dropzone@7.12.1)(@mantine/hooks@7.12.1)(embla-carousel-autoplay@8.1.8)(embla-carousel-react@8.1.8)(react-dom@18.3.1)(react-markdown@9.0.1)(react@18.3.1)
-  '@hyperplay/utils':
+  '@novaplay/utils':
     specifier: ^0.2.3
     version: 0.2.3
   '@tanstack/react-query':
@@ -2934,7 +2934,7 @@ packages:
     deprecated: Use @eslint/object-schema instead
     dev: true
 
-  /@hyperplay/chains@0.2.10:
+  /@novaplay/chains@0.2.10:
     resolution:
       {
         integrity: sha512-TUe9vJo9jXx23pb5QlGuW6xo6JmXYjqXKJSma//aUPZ99HU8I/lATlyqdXwozPfQ2qGsAYn58FCTo2kbF+J+8w==
@@ -2945,7 +2945,7 @@ packages:
       - debug
     dev: true
 
-  /@hyperplay/chains@0.3.0(typescript@5.5.4):
+  /@novaplay/chains@0.3.0(typescript@5.5.4):
     resolution:
       {
         integrity: sha512-7FcQSR6bIZnfJXpwDHEX4tcjMJQw/oW97h6qT+Q0eDsMdipa9m6ZJm3hybqq9asLpxlX0BV5cn01S8nRHOg9Pg==
@@ -2961,7 +2961,7 @@ packages:
       - zod
     dev: true
 
-  /@hyperplay/ui@1.7.17(@emotion/react@11.13.0)(@mantine/carousel@7.12.1)(@mantine/core@7.12.1)(@mantine/dropzone@7.12.1)(@mantine/hooks@7.12.1)(embla-carousel-autoplay@8.1.8)(embla-carousel-react@8.1.8)(react-dom@18.3.1)(react-markdown@9.0.1)(react@18.3.1):
+  /@novaplay/ui@1.7.17(@emotion/react@11.13.0)(@mantine/carousel@7.12.1)(@mantine/core@7.12.1)(@mantine/dropzone@7.12.1)(@mantine/hooks@7.12.1)(embla-carousel-autoplay@8.1.8)(embla-carousel-react@8.1.8)(react-dom@18.3.1)(react-markdown@9.0.1)(react@18.3.1):
     resolution:
       {
         integrity: sha512-NUNDJNBVxjij5dwIJ+kvOtiIZMWz/cvzAyQwjmXfOH/zeGc24MXkZQE6RKrHDcD06zKrEYWlcd6S+8ghQ6jM3w==
@@ -2983,8 +2983,8 @@ packages:
       '@fortawesome/free-regular-svg-icons': 6.6.0
       '@fortawesome/free-solid-svg-icons': 6.6.0
       '@fortawesome/react-fontawesome': 0.2.2(@fortawesome/fontawesome-svg-core@6.6.0)(react@18.3.1)
-      '@hyperplay/chains': 0.2.10
-      '@hyperplay/utils': 0.1.4
+      '@novaplay/chains': 0.2.10
+      '@novaplay/utils': 0.1.4
       '@mantine/carousel': 7.12.1(@mantine/core@7.12.1)(@mantine/hooks@7.12.1)(embla-carousel-react@8.1.8)(react-dom@18.3.1)(react@18.3.1)
       '@mantine/core': 7.12.1(@mantine/hooks@7.12.1)(@types/react@18.3.3)(react-dom@18.3.1)(react@18.3.1)
       '@mantine/dropzone': 7.12.1(@mantine/core@7.12.1)(@mantine/hooks@7.12.1)(react-dom@18.3.1)(react@18.3.1)
@@ -2999,7 +2999,7 @@ packages:
       react-markdown: 9.0.1(@types/react@18.3.3)(react@18.3.1)
     dev: true
 
-  /@hyperplay/utils@0.1.4:
+  /@novaplay/utils@0.1.4:
     resolution:
       {
         integrity: sha512-brHHvhSl5fOLIX2hCp2ZP0dfdMHb8uGME3o3NjK0imVdYlspUVe1YXp5x9P5O2iJn+7C3oPlbLARsC/KTDWSJw==
@@ -3008,7 +3008,7 @@ packages:
       bignumber.js: 9.1.2
     dev: true
 
-  /@hyperplay/utils@0.2.3:
+  /@novaplay/utils@0.2.3:
     resolution:
       {
         integrity: sha512-KxSFUA/3SOjU+LfteLQZ60u7x8F6okZ3lATHKkopDWg6DET6OLjZ5OMaxolyimqYe3yndnAwo6qTzEAjsHGyww==
