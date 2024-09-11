@@ -1,5 +1,5 @@
-import { getChainMetadataSync } from '@hyperplay/chains'
-import { Reward } from '@hyperplay/utils'
+import { getChainMetadataSync } from '@novaplay/chains'
+import { Reward } from '@novaplay/utils'
 import { TFunction } from 'i18next'
 
 export function getRewardCategory(
