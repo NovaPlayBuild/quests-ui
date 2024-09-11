@@ -1,4 +1,4 @@
-import { DepositContract, Reward, RewardClaimSignature } from '@hyperplay/utils'
+import { DepositContract, Reward, RewardClaimSignature } from '@novaplay/utils'
 import { questRewardAbi } from '../abis/RewardsAbi'
 import { WriteContractMutateAsync } from 'wagmi/query'
 import { Config } from 'wagmi'
