@@ -1,4 +1,4 @@
-import { Quest } from '@hyperplay/utils'
+import { Quest } from '@novaplay/utils'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 export default function useGetQuest(
