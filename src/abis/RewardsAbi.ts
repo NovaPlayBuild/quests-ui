@@ -1,4 +1,4 @@
-// @hyperplay/contracts is private so we need to move the abi into @hyperplay/utils or copy it here
+// @novaplay/contracts is private so we need to move the abi into @novaplay/utils or copy it here
 export const questRewardAbi = [
   {
     inputs: [
