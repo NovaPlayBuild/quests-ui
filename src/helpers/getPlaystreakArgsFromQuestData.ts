@@ -1,5 +1,5 @@
-import { PlayStreakEligibility } from '@hyperplay/ui'
-import { Quest, UserPlayStreak } from '@hyperplay/utils'
+import { PlayStreakEligibility } from '@novaplay/ui'
+import { Quest, UserPlayStreak } from '@novaplay/utils'
 
 // this is initialized when the overlay is started for this game
 let dateTimeCurrentSessionStartedInMsSinceEpoch = Date.now()
