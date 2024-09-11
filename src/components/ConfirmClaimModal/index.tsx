@@ -1,5 +1,5 @@
 import { Trans, useTranslation } from 'react-i18next'
-import { Button, Images, Modal, ModalProps } from '@hyperplay/ui'
+import { Button, Images, Modal, ModalProps } from '@novaplay/ui'
 import styles from './index.module.scss'
 import React from 'react'
 
