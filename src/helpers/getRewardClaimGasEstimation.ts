@@ -1,6 +1,6 @@
 import { createPublicClient, http } from 'viem'
-import { chainMap, parseChainMetadataToViemChain } from '@hyperplay/chains'
-import { Reward } from '@hyperplay/utils'
+import { chainMap, parseChainMetadataToViemChain } from '@novaplay/chains'
+import { Reward } from '@novaplay/utils'
 
 const averageEstimatedGasUsagePerFunction: Record<string, number> = {
   ERC1155: 102_470,
