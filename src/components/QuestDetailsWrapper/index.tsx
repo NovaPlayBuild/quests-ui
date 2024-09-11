@@ -5,7 +5,7 @@ import {
   QuestDetails,
   QuestDetailsProps,
   QuestDetailsTranslations
-} from '@hyperplay/ui'
+} from '@novaplay/ui'
 import styles from './index.module.scss'
 import useGetQuest from '../../hooks/useGetQuest'
 import useGetSteamGame from '../../hooks/useGetSteamGame'
@@ -17,15 +17,15 @@ import {
   ConfirmClaimParams,
   Runner,
   DepositContract
-} from '@hyperplay/utils'
+} from '@novaplay/utils'
 import { mintReward } from '../../helpers/mintReward'
 import { resyncExternalTasks as resyncExternalTasksHelper } from '../../helpers/resyncExternalTask'
 import useGetUserPlayStreak from '../../hooks/useGetUserPlayStreak'
 import { useMutation, useQueryClient } from '@tanstack/react-query'
 import { getPlaystreakArgsFromQuestData } from '../../helpers/getPlaystreakArgsFromQuestData'
 import { useGetRewards } from '../../hooks/useGetRewards'
-import { chainMap, parseChainMetadataToViemChain } from '@hyperplay/chains'
-import { InfoAlertProps } from '@hyperplay/ui/dist/components/AlertCard'
+import { chainMap, parseChainMetadataToViemChain } from '@novaplay/chains'
+import { InfoAlertProps } from '@novaplay/ui/dist/components/AlertCard'
 import { useSyncPlaySession } from '../../hooks/useSyncInterval'
 import { useTrackQuestViewed } from '../../hooks/useTrackQuestViewed'
 import { ConfirmClaimModal } from '../ConfirmClaimModal'
