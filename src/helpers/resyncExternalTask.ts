@@ -1,4 +1,4 @@
-import { Reward } from '@hyperplay/utils'
+import { Reward } from '@novaplay/utils'
 
 export async function resyncExternalTasks(
   rewards: Reward[],
