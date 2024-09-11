@@ -1,4 +1,4 @@
-import { UserPlayStreak } from '@hyperplay/utils'
+import { UserPlayStreak } from '@novaplay/utils'
 import { useQuery, useQueryClient } from '@tanstack/react-query'
 
 export default function useGetUserPlayStreak(
